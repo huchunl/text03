@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>图书</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.0/css/bootstrap.css" rel="stylesheet">
+    <style>
+      #shade{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+        opacity: 0.3;
+        z-index: 10;
+        display: none;
+      }
+      #modal{
+        position: absolute;
+        width: 1000px;
+        height: 150px;
+        top: 200px;
+        left: 200px;
+        z-index: 33;
+        margin: auto;
+        display: none;
+        line-height: 100px;
+        background-color: cadetblue;
+      }
+    </style>
+  </head>
+  <body >
+    
+    <div class="container" style="margin: 100px auto;">
+      <form class="form-inline" style="margin: 25px auto">
+
+          <div class="form-group">
+              <label for="bookName">名字：</label>
+              <input type="text" class="form-control" id="bookName">
+          </div>
+          <div class="form-group">
+              <label for="bookAuthor">作者：</label>
+              <input type="text" class="form-control" id="bookAuthor">
+          </div>
+          <div class="form-group">
+              <label for="bookPublish">出版社：</label>
+              <input type="text" class="form-control" id="bookPublish">
+          </div>
+          <input id="addBook" value="添加" type="button" class="btn btn-primary" style="margin-left: 10px;">
+      </form>
+      <table class="table table-striped table-bordered table-hover">
+          <thead>
+          <tr style="background-color: #5FB878;">
+              <th>ID</th>
+              <th>名字</th>
+              <th>作者</th>
+              <th>出版社</th>
+              <th>操作</th>
+
+          </tr>
+          </thead>
+          <tbody id="tb">
+            
+           
+          </tbody>
+      </table>
+  </div>
+  <div class="footer" style="float: right;">
+    <p>总共有<span id="totle"></span>条新闻，每页显示<span id="pagesize"></span>条，
+        当前是 <span id="page"></span>/<span id="size"></span> 页
+            <a href="javascript:;" id="prev" class="btn btn-success">上一页</a>
+            <a href="javascript:;" id="next" class="btn btn-success">下一页</a></p>
+    </p>
+ </div>
+ <div id="shade">
+
+ </div>
+ <div id="modal" style="left:60px">
+  <form class="form-inline" style="margin: 25px 0">
+    <div class="form-group">
+        <label for="bookName" style="margin-left: 20px;">名字：</label>
+        <input type="text" class="form-control mingz" id="bookName" value="" placeholder="">
+    </div>
+    <div class="form-group">
+        <label for="bookAuthor">作者：</label>
+        <input type="text" class="form-control zuoz" id="bookAuthor">
+    </div>
+    <div class="form-group">
+        <label for="bookPublish">出版社：</label>
+        <input type="text" class="form-control chub" id="bookPublish">
+    </div>
+    <button type="button" class="btn btn-primary" id="a2">确认修改</button>
+</form>
+ </div>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.11.3/jquery.js"></script>
+    <script>
+      let idD = "";
+      $('#addBook').click(function(){
+        var bookName=$('#bookName').val();
+        var bookAuthor=$('#bookAuthor').val();
+        var bookPublish=$('#bookPublish').val();
+        if(bookName.length <= 0 || bookAuthor.length <= 0 || bookPublish.length <= 0){
+          alert('请填写完整')
+          return;
+        }
+        $.get('http://localhost:3000/add',{
+          title:bookName,
+          author:bookAuthor,
+          cbs:bookPublish,
+        },function(res){
+          if(res.code !== 1){
+                  return alert("添加图片失败了")
+                }
+                // addbook();
+                asd(page);
+                $("#bookName").val("")
+                $("#bookAuthor").val("")
+                $("#bookPublish").val("")
+          // console.log(res)
+      });
+      })
+
+
+      let page = 1 ;
+      function asd(page){
+        // alert(page)
+        $.ajax({
+          url:'http://localhost:3000/orr',
+          data:{page},
+          dataType:"json",
+          type:'get',
+          success:function(res){
+                    let str ="";
+                    (res.data).forEach(function (item, index) {
+                        str += `
+                  <tr class="">
+                    <td>${index + 1}</td>
+                    <td>${item.title}</td>
+                    <td>${item.author}</td>
+                    <td class="del">${item.cbs}</td>
+                   <td style="display: none;" id ="okkk">${item._id}</td>
+                    <td id="td"><button  class="btn  btn-danger btn-xs det" delete="${item._id}">删除</button>
+                        <button  class="btn btn-success btn-xs edit" editid="${item._id}" tit="${item.title}" aut="${item.author}" cbs="${item.cbs}">编辑</button>
+                    </td>
+                     
+                  </tr>                       
+                  `
+                    })
+                    $("tbody").html(str);
+                    $("#totle").html(res.totle);
+                    $("#pagesize").html(res.pagesize);
+                    $("#page").html(res.page);
+                    $("#size").html(res.yeshu);
+          },
+          error:function(err){
+                console.log(err)
+            }
+        })
+      }
+      asd(page);
+      $('#tb').on('click','.det',function(e){
+        let id = $(this).attr('delete')
+        let r = confirm("你确定要删除么")
+        if(r == true){
+          $.get('http://localhost:3000/dele',{id},function(res){
+            console.log(res);
+            asd(page);
+          })
+        }
+       
+        e.preventDefault()
+      });
+      $('#a2').click(
+        function(){
+        
+        let fir =  $('.mingz').val()
+        let sec =  $('.zuoz').val()
+        let three=  $('.chub').val()
+
+        $.get('http://localhost:3000/edit',{
+          ID:id,
+          title:fir,
+          author:sec,
+          cbs:three
+        },function(res){
+          if(res.code==0){
+            alert('添加失败')
+            asd(page);
+          }else{
+            alert('添加成功')
+            asd(page);
+          }
+        });
+        $('#shade').css("display","none")
+        $('#modal').css("display","none")
+
+        }
+        
+      )
+      $('#tb').on('click','.edit',function(e){
+         id = $(this).attr('editid');
+        let tit = $(this).attr('tit')
+        let aut = $(this).attr("aut")
+        let cbs = $(this).attr('cbs');
+        
+        $('.mingz').prop('value',tit)
+        $('.zuoz').prop('value',aut)
+        $('.chub').prop('value',cbs)
+        
+
+        
+
+        var shade = document.getElementById("shade");
+        shade.style.display='block';
+        let modal = document.getElementById('modal')
+        modal.style.display='block';
+        
+          
+        
+        e.preventDefault()
+      })
+
+      $('#prev').click(function(e){
+        
+           if(page>1){
+            asd(--page)
+           }
+          e.preventDefault()
+
+       })
+       $('#next').click(function(e){
+        let yeshu = $("#size").html();
+        //    alert(111)
+           if(page<yeshu){    
+            asd(++page) ;
+            // alert(page)
+           }
+           e.preventDefault()
+
+       })
+    </script>
+  </body>
+</html>

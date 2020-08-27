@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./yang/css/denglu.css">
+    <link rel="stylesheet" href="./layui-v2.5.6/layui/css/layui.css">
+    <link rel="stylesheet" href="http://at.alicdn.com/t/font_2008661_w42zee08uj.css">
+
+</head>
+<body>
+    <div class="my-box1 layui-anim-scale">
+        <ul>
+        <li> <div class="layui-form-item" >
+          <div class="icon-yonghu iconfont" style="width: 20px; height: 20px; position: absolute;top: 40px;left: 25px;"></div>
+            <label class="layui-form-label ">用户名:</label>
+            <div class="layui-input-inline">
+              <input type="text" name="text" required lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input q1" >
+            </div></li>
+        <li><div class="layui-form-item">
+          <div class="icon-mima iconfont" style="width: 20px; height: 20px; position: absolute;top: 93px;left: 35px;"></div>
+            <label class="layui-form-label">密码:</label>
+            <div class="layui-input-inline ">
+              <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input q2">
+            </div></li>
+        <button class="layui-btn layui-btn-radius layui-btn-warm my-butn q3">登录</button>
+        </ul>
+       
+        <a href="#" class="clik">点击去注册</a>
+    </div>
+    <div class="my-box2 layui-anim-scale">
+        <ul>
+        <li><div class="icon-yonghu"></div> <div class="layui-form-item">
+            <label class="layui-form-label">用户名:</label>
+            <div class="layui-input-inline">
+              <input type="text" name="text" required lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+            </div></li>
+        <li><div class="icon-mima" ></div><div class="layui-form-item">
+            <label class="layui-form-label">输入密码:</label>
+            <div class="layui-input-inline">
+              <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+            </div></li>
+        <li><div class="icon-mima" ></div><div class="layui-form-item">
+                <label class="layui-form-label">确认密码:</label>
+                <div class="layui-input-inline">
+                  <input type="password" name="password" required lay-verify="required" placeholder="请确认密码" autocomplete="off" class="layui-input">
+                </div></li>
+        <button class="layui-btn layui-btn-radius layui-btn-warm my-butn">点击注册</button>
+        </ul>
+       
+        <a href="#" class="clik">点击去登录</a>
+    </div>
+    <script src="./layui-v2.5.6/layui/layui.js"></script>
+    <script src="./yang/js/jquery-1.11.3.min.js"></script>
+    <script src="./yang/js/mydenglu.js"></script>
+
+    <script>
+      $('.q3').click(function(){
+        
+        let q1 = $('.q1').val()
+        let q2 = $('.q2').val();
+        $.post('http://localhost:3000/login',{
+          username:q1,
+          password:q2
+        },function(res){
+          if(res.code == 200){
+            alert('登录成功')
+            let token = res.token
+            console.log('登录成功')
+            window.location.href = "http://127.0.0.1:5500/topone/bookasd/client/layui-v2.5.6/%E5%90%8E%E5%8F%B0index.html"
+
+          }else{
+            alert('登录失败')
+          }
+
+        })
+      }
+      
+      )
+    </script>
+</body>
+
+</html>
